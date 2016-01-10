@@ -25,10 +25,6 @@
 
 <dom-module id="todo-app">
     <style>
-    /*img {
-    	width: 50px;
-    	height: 50px;
-    }*/
     .list{
     	padding: 0;
     }
@@ -64,7 +60,7 @@
     paper-fab{
     	position: absolute;
     	background: #00bcd4;
-    	bottom: 20px;
+    	bottom: 10px ;
     	right: 20px;
     }
     .main-panel {
@@ -91,64 +87,129 @@
 		width: 35%;
 		padding: 10px;
 	}
+  .todo-element{
+    padding: 10px;
+   }
+   paper-material{
+    background: #fff;
+    max-width: 640px;
+    width: 90%;
+    margin: 25px auto;
+    position: relative;
+   }
+   paper-checkbox{
+    float: right;
+    margin: 20px 20px;
+   }
+   paper-button{
+    background: #ccc;
+   }
+   paper-fab {
+    position: absolute;
+    background: #ccc;
+    bottom: 15px;
+    right: 25px;
+   }
+   .done{
+    background: #00b200;
+   }
+   paper-input{
+    margin: 0 20px;
+   }
+   .info{
+    font-size: 14px;
+    font-style: italic;
+    color: #696969;
+    padding-top: 0;
+    padding-bottom: 0;
+    width: 350px;
+   }
+   .info span{
+    margin-left: 5px;
+   }
     </style>
+    
     <template>
     	
     	<firebase-auth auto-login redirect  location="[[firebaseURL]]" provider="[[firebaseProvider]]" on-error="onFirebaseError" on-login="onFirebaseLogin"></firebase-auth>
 
         <paper-toast id="errorToast"></paper-toast>
 
-    	<paper-drawer-panel>
-			<paper-header-panel class="side-panel" drawer>
-				<paper-toolbar>
-					<paper-item>Completed Tasks</paper-item>
-				</paper-toolbar>
-				<paper-menu id="completed" class="list">
-					<template is="dom-if" if="{{!done.length}}">
-						<paper-material class="task-empty">
-							<paper-item elevation="2">Completed tasks will appear here!</paper-item>
-						</paper-material>
-					</template>
-					<template id="done" is="dom-repeat" items="{{done}}">
-						<paper-item>{{item.task}}<i style="margin-left: 5px;">{{item.user}}</i></paper-item>
-					</template>
-				</paper-menu>
-				<paper-material id="made-with" elevation="2">
-					<a href="http://zdravkolukic.com/"><img src="../img/Wicked_Wabbit.jpg"/></a>
-				</paper-material>
-			</paper-header-panel>
-			<paper-header-panel main class="main-panel">
-				<paper-toolbar>
-					<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-					<paper-item>
-						<iron-icon icon="icons:face"></iron-icon>
-						<span id="here">0</span>
-					</paper-item>
-					<paper-item>Active Tasks</paper-item>
-				</paper-toolbar>
-				<div style="border-left: 1px solid #ccc;">
-					<!-- To create a new Todo -->
-					<paper-material id="todoEntry" elevation="2">
-						<paper-input id="tTask" label="Task"></paper-input>
-		                <paper-input id="tUser" char-counter label="Username" maxlength="16" error="maximum characters exceeded" style="width:75%;display: inline-block" >
-		                </paper-input> 
-						<paper-fab icon="icons:add" on-tap="addTask"></paper-fab>
-					</paper-material>
-					<div id="todos">
-						<template is="dom-if" if="{{!todo.length}}">
-							<paper-material class="task-empty">
-								<paper-item elevation="2">No Tasks remain. Updates are Real-Time so stay tuned!</paper-item>
-							</paper-material>
-						</template>
-						<template id="tasks" is="dom-repeat" items="{{todo}}">
-							<todo-element user="{{item.user}}" task="{{item.task}}" rid="{{item.rid}}"></todo-element>
-						</template>
-					</div>
-				</div>
-			</paper-header-panel>
-		</paper-drawer-panel> 
+          <paper-drawer-panel>
+            
+            <paper-header-panel class="side-panel" drawer>
+            	<paper-toolbar>
+            		<paper-item>Completed Tasks</paper-item>
+            	</paper-toolbar>
+            	<paper-menu id="completed" class="list">
+            		<template is="dom-if" if="{{!done.length}}">
+            			<paper-material class="task-empty">
+            				<paper-item elevation="2">Completed tasks will appear here!</paper-item>
+            			</paper-material>
+            		</template>
+            		
+                <template id="done" is="dom-repeat" items="{{done}}">
+            			<paper-item>{{item.task}}<i style="margin-left: 5px;">{{item.user}}</i></paper-item>
+            		</template>
+
+            	</paper-menu>
+            	<paper-material id="made-with" elevation="2">
+            		<a href="http://zdravkolukic.com/"><img src="../img/Wicked_Wabbit.jpg"/></a>
+            	</paper-material>
+            </paper-header-panel>
+
+      			<paper-header-panel main class="main-panel">
+
+      				<paper-toolbar>
+      					<paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+      					<paper-item>
+      						<iron-icon icon="icons:face"></iron-icon>
+      						<span id="here">{{count}}</span>
+      					</paper-item>
+      					<paper-item>Active Tasks</paper-item>
+      				</paper-toolbar>
+
+      				<div style="border-left: 1px solid #ccc;">
+      					<!-- To create a new Todo -->
+      					<paper-material id="todoEntry" elevation="2">
+      						<paper-input id="tTask" label="Task"></paper-input>
+      		                <paper-input id="tUser" char-counter label="Username" maxlength="16" error="maximum characters exceeded" style="width:75%;display: inline-block" >
+      		                </paper-input> 
+      						<paper-fab icon="icons:add" on-tap="addTask"></paper-fab>
+      					</paper-material>
+                
+      					<div id="todos">
+
+      						<template is="dom-if" if="{{!todo.length}}">
+      							<paper-material class="task-empty">
+      								<paper-item elevation="2">No Tasks remain. Updates are Real-Time so stay tuned!</paper-item>
+      							</paper-material>
+      						</template>
+
+                  <template id="tasks" is="dom-repeat" items="{{todo}}">
+                      
+                    <paper-material class="todo-element" elevation="1">
+
+                      <paper-checkbox on-tap="check"></paper-checkbox>
+                      <paper-fab hidden="{{item.editing}}"  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+                      <paper-fab hidden={{!item.editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+                      <paper-item hidden="{{item.editing}}" id="task">{{item.task}}</paper-item>
+                      <paper-input id="edit" hidden="{{!item.editing}}" value="{{item.task}}"></paper-input>
+                      <paper-item class="info">Created by: <span>{{ item.user }}</span></paper-item>
+                      <paper-item class="info"><span class="info">{{ item.time }}</span></paper-item>
+
+                    </paper-material>
+
+                  </template>
+
+      					</div>
+      				</div>
+      			</paper-header-panel>
+
+          </paper-drawer-panel> 
     	
     </template>
+
 </dom-module>    
     <script>
        Polymer({
@@ -156,40 +217,82 @@
 
           properties: {
           	//put dummy date
-          	todo: {
-          		type: Array,
-          		value: [{user: "Zdravko", task:"Make a Polymer app!", rid: 0},{user:"Kristijan",task:"See the Polymer app thats make by Zdravko",rid:1},{user:"Marina",task:"Think of task",rid:2}]
-          	},
-          	done: {
+          	todo: { // list of 'active' todos
+              type: Array,
+              value: [
+              {
+                user: "Zdravko", 
+                task:"Make a Polymer app!", 
+                rid: 0,
+                editing: false,
+                time: '01/01/2016'
+              },{
+                user:"Kristijan",
+                task:"See the Polymer app thats make by Zdravko",
+                rid:1,
+                editing: false,
+                time: '01/01/2016'
+              },{
+                user:"Marina",
+                task:"Think of task",
+                rid:2,
+                editing: false,
+                time: '01/01/2016'
+              }
+            ]},
+          	done: { // list of inactive 'completed' todos
           		type: Array,
           		value: []
           	},
-          	message: {
-          		type: Array,
-          		value: []
-          	},
-          	present: Array,
-          	value: []
+            count: {
+              type: Number,
+              computed: 'countTasks(todo)',
+              observer: 'handleChange'
+            }
           },
-          //ovde nastaje problem ne znam kako da pushujem taskove u dole polje kao u primeru
-          addTask: function(){
-          	if(! this.$.tTask.value){
-          		alert('Write the task');
-          		return;
-          	}
+         
+          check: function(e) {
 
-          	if(! this.$.tUser.value.length){
-          		alert('Who are you!');
-          		return;
-          	}
+            this.push('done', e.model.item);
 
-          	var todo = this.$.base.push({
-          		tTask: this.$.tTask.value,
-          		tUser: this.$.tUser.value,
-          		rid: new randID()
-          	});
-          	this.$.tTask.value = '';
-            this.$.tUser.value = '';
+            console.log(this.$.done.items);
+
+            var index = this.$.tasks.items.indexOf(e.model.item);
+
+            if (index != -1) {
+
+              this.splice('todo', index, 1);
+
+              console.log(this.$.tasks.items);
+            }
+          },
+
+          doEdit: function(e) {
+
+            var index = this.$.tasks.items.indexOf(e.model.item);
+
+            this.set('todo.' + index + '.editing', !e.model.item.editing);
+          },
+
+          addTask: function(e){
+            if(! this.$.tTask.value){
+              alert('Write the task');
+              return;
+            }
+
+            if(! this.$.tUser.value.length){
+              alert('Who are you!');
+              return;
+            }
+
+            this.push('todo', {user:tUser.value, task:tTask.value, rid:randID(), time: new Date().toLocaleString()});
+
+          },
+
+          countTasks: function(todo){
+                  
+                  
+                   return todo.length;
           }
 	    
                       
